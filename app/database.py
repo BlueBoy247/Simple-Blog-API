@@ -1,6 +1,22 @@
-fake_db = {
-    "users": {
-        "test@test.com": "$2b$12$4imEOx6LQ0WsvQJSY5/c3.25uBSoEFbtQReKfhyOz1nvZ4RRB68zu"
-    },
-    "blogs": {}
-}
+import os
+from typing import Generator
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session
+from dotenv import load_dotenv
+
+load_dotenv()
+DB_URL = os.getenv("DATABASE_URL")
+
+engine = create_engine(DB_URL, echo=True)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+Base.metadata.create_all(bind=engine)
+
+def get_db() -> Generator[Session, None, None]:
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
