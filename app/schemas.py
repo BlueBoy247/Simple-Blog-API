@@ -1,9 +1,16 @@
 from pydantic import BaseModel
 
-class Blogpost(BaseModel):
+class User(BaseModel):
+    email: str
+    password: str
+
+class BlogPost(BaseModel):
     title: str
     content: str
-    tags: str | list
+    tags: list
+
+    class Config:
+        from_attributes = True
 
 class Token(BaseModel):
     access_token: str
