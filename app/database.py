@@ -1,3 +1,7 @@
+"""
+This module contains the database configuration and dependencies.
+"""
+
 import os
 from typing import Generator
 from sqlalchemy import create_engine
@@ -16,6 +20,12 @@ Base = declarative_base()
 Base.metadata.create_all(bind=engine)
 
 def get_db() -> Generator[Session, None, None]:
+    """
+    FastAPI dependency to get a database session.
+    Yields a database session.
+    Closes the database session after the context is exited.
+    """
+
     db = SessionLocal()
     try:
         yield db

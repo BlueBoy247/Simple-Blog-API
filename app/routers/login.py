@@ -1,3 +1,7 @@
+"""
+This module contains the login router, which handles user authentication and JWT generation.
+"""
+
 import os
 from datetime import datetime, timedelta, timezone
 from secrets import token_hex
@@ -37,6 +41,17 @@ router = APIRouter(
     tags=["login"],
 )
 
+def credentials_exception(detail: str) -> HTTPException:
+    """
+    Raises an HTTPException for 401 Unauthorized with a message detail.
+
+    Args:
+        detail (str): The detail message to be included in the response.
+
+    Returns:
+        HTTPException: The raised HTTPException.
+    """
+
     return HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail=detail,
@@ -44,6 +59,18 @@ router = APIRouter(
     )
 
 def create_jwt(email: str) -> str:
+    """
+    Creates a JWT for the given user's email address.
+
+    The token is set to expire in 30 days. The "nbf" claim is set to the current time.
+
+    Args:
+        email (str): The email address to encode in the JWT.
+
+    Returns:
+        str: The JWT as a string.
+    """
+
     exp = datetime.now(timezone.utc) + timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
     nbf = datetime.now(timezone.utc)
     to_encode = {
@@ -58,6 +85,23 @@ async def get_current_user(
         token: Annotated[str, Depends(oauth2_scheme)],
         db: Session = Depends(get_db)
     ) -> dict:
+    """
+    Retrieves the user associated with the given JWT token.
+
+    The user is retrieved from the database using the email address encoded in the JWT token.
+    If the token is invalid or has expired, an HTTPException is raised.
+
+    Args:
+        token (Annotated[str, Depends(oauth2_scheme)]):
+            The JWT token to validate and retrieve user data from.
+        db (Session): SQLAlchemy session
+
+    Returns:
+        dict: The user data as a dictionary.
+
+    Raises:
+        HTTPException: If the token is invalid or has expired, or if the user is not found.
+    """
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -80,6 +124,20 @@ async def get_current_user(
 
 @router.post("")
 async def login(email: str, password: str, db: Session = Depends(get_db)) -> schemas.Token:
+    """
+    Login with email and password.
+
+    Args:
+        email (str): Email address to log in with.
+        password (str): Password to log in with.
+
+    Returns:
+        schemas.Token: The JWT token and its type.
+
+    Raises:
+        HTTPException: If the email or password is invalid.
+    """
+
     user = crud.get_user(db, email)
     if not user:
         raise credentials_exception("No such user")
