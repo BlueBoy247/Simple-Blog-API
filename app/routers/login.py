@@ -19,13 +19,13 @@ ACCESS_TOKEN_EXPIRE_DAYS = 30
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-if SECRET_KEY is None:
+if SECRET_KEY is None or len(SECRET_KEY) < 32:
     SECRET_KEY = token_hex(32)
     with open(".env", "a", encoding="utf-8") as f:
         f.write(f"SECRET_KEY={SECRET_KEY}\n")
 
 JWT_ISSUER = os.getenv("JWT_ISSUER")
-if JWT_ISSUER is None:
+if JWT_ISSUER is None or len(JWT_ISSUER) == 0:
     JWT_ISSUER = "fastapi"
     with open(".env", "a", encoding="utf-8") as f:
         f.write(f"JWT_ISSUER={JWT_ISSUER}\n")
