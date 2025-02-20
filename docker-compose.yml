@@ -9,6 +9,8 @@ services:
       - db
     environment:
       - DATABASE_URL=mysql+pymysql://user:password@db:3306/blogdb
+      - JWT_ISSUER=
+      - SECRET_KEY=
   db:
     container_name: db
     image: mysql:8.0
@@ -21,4 +23,4 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./sql:/docker-entrypoint-initdb.d
