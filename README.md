@@ -1,4 +1,5 @@
 # Simple Blog API
+繁體中文 | [English](./README-en.md)
 
 ## 架構
 ```
