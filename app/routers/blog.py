@@ -20,7 +20,6 @@ async def get_post_by_page(page: int, pagesize: int = 10, db: Session = Depends(
 @router.post("/create", dependencies=[Depends(get_current_user)])
 async def create_post(blog_post: schemas.BlogPost, db: Session = Depends(get_db)) -> dict:
     result = crud.create_post(db, blog_post)
-    print(result)
     if result["success"]:
         return {"message": "success"}
     raise HTTPException(status_code=500, detail=result["error"])
