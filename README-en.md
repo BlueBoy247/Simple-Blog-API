@@ -1,6 +1,8 @@
 # Simple Blog API
 [繁體中文](./README.md) | English
 
+A simple blog backend API built with FastAPI.
+
 ## Architecture
 ```
 blog-api/
