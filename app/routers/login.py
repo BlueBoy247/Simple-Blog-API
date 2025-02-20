@@ -2,16 +2,15 @@ import os
 from datetime import datetime, timedelta, timezone
 from secrets import token_hex
 from typing import Annotated
-
-import jwt
 from fastapi import Depends, APIRouter, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
-from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
+import jwt
+from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
+from passlib.context import CryptContext
+from app import crud, schemas
 from app.database import get_db
-from app import schemas, crud
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_DAYS = 30
@@ -38,11 +37,17 @@ router = APIRouter(
     tags=["login"],
 )
 
-def create_jwt_token(user: str) -> str:
+    return HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=detail,
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+def create_jwt(email: str) -> str:
     exp = datetime.now(timezone.utc) + timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
     nbf = datetime.now(timezone.utc)
     to_encode = {
-        "email": user,
+        "email": email,
         "iss": JWT_ISSUER,
         "exp": exp,
         "nbf": nbf,
@@ -53,12 +58,6 @@ async def get_current_user(
         token: Annotated[str, Depends(oauth2_scheme)],
         db: Session = Depends(get_db)
     ) -> dict:
-    def credentials_exception(detail: str) -> HTTPException:
-        return HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=detail,
-            headers={"WWW-Authenticate": "Bearer"},
-        )
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -83,17 +82,9 @@ async def get_current_user(
 async def login(email: str, password: str, db: Session = Depends(get_db)) -> schemas.Token:
     user = crud.get_user(db, email)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No such user",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise credentials_exception("No such user")
     if not pwd_context.verify(password, user.password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise credentials_exception("Incorrect password")
 
-    token = create_jwt_token(email)
+    token = create_jwt(email)
     return schemas.Token(access_token=token, token_type="bearer")
