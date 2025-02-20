@@ -28,12 +28,12 @@ blog-api/
 
 ## API Description
 ### login
-- `POST /login` : User login. After successful login, a JWT which expires in 30 days will be returned. The JWT contains user email, issuer, expiration time, and not before.
+- `POST /login` : User login. The parameters are `email` and `password`, representing the user's email address and password, respectively. After successful login, a JWT which expires in 30 days will be returned. The JWT contains user's email, token issuer, expiration time, and not before.
 
 ### blog
 - `GET /blog/all` : List all posts (title, content, tags).
-- `GET /blog/page/{page}` : List posts by page (title, content, tags). You can specify the page size with the `pagesize` query parameter, the default value is 10.
-- `POST /blog/create` : Create a new post. This endpoint requires JWT Bearer Authentication, and it will return HTTP 401 if the authentication fails. The request body should be `{"title": "", "content": "", "tags": []}`.
+- `GET /blog/page/{page}` : List posts by page (title, content, tags). The number of posts per page can be controlled with the `pagesize` query parameter, the default value is 10.
+- `POST /blog/create` : Create a new post. The JWT will be validated, and if the validation fails, a HTTP 401 status will be returned. The request body must be JSON containing `title` (string), `content` (string), and `tags` (array of strings), representing the post's title, content, and tags, respectively.
 
 ## How to Run
 ### Local
