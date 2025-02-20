@@ -1,6 +1,8 @@
 # Simple Blog API
 繁體中文 | [English](./README-en.md)
 
+基於 FastAPI 的簡易部落格後端 API。
+
 ## 架構
 ```
 blog-api/
