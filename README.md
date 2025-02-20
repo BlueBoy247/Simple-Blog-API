@@ -28,12 +28,12 @@ blog-api/
 
 ## API 說明
 ### login
-- `POST /login`：使用者登入。登入成功後會回傳一個效期 30 天的 JWT，欄位包含使用者 email 、 Issuer 、 Expiration Time 、 Not Before。
+- `POST /login`：使用者登入。參數為 `email` 和 `password`，分別為使用者帳號和密碼。登入成功後會回傳一個效期 30 天的 JWT，欄位包含使用者 Email 、 憑證之 Issuer 、 Expiration Time 、 Not Before。
 
 ### blog
 - `GET /blog/all`：列舉所有文章（標題、內文、標籤）。
-- `GET /blog/page/{page}`：列舉分頁文章（標題、內文、標籤）。可帶 `pagesize` 參數設定每頁文章數，預設值為 10。
-- `POST /blog/create`：新增文章。會驗證 JWT，若驗證失敗將回傳 401 狀態。 Request 攜帶之 data 格式要求為 `{"title": "", "content": "", "tags": []}`。
+- `GET /blog/page/{page}`：列舉分頁文章（標題、內文、標籤）。參數為 `pagesize`，非必填，用於設定每頁文章數，預設值為 10。
+- `POST /blog/create`：新增文章。會驗證 JWT，若驗證失敗將回傳 401 狀態。 Request 攜帶之 data 需為 JSON，當中包含 `title` （字串）、`content` （字串） 和 `tags` （陣列，元素為字串），分別為文章之標題、內文和標籤。
 
 ## 運行服務
 ### 本地端
