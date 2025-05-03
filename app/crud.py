@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from app import models, schemas
 
-def get_user(db: Session, email: str) -> models.User:
+def get_user(db: Session, email: str) -> models.User | None:
     """
     Get user by email
 
@@ -67,7 +67,7 @@ def get_all_post(db: Session) -> list:
         posts = [schemas.BlogPost.model_validate(post) for post in db.query(models.BlogPost).all()]
         return posts
     except SQLAlchemyError:
-        return None
+        return []
 
 def get_post_by_page(db: Session, page: int, pagesize: int) -> list:
     """
@@ -86,4 +86,4 @@ def get_post_by_page(db: Session, page: int, pagesize: int) -> list:
         posts = db.query(models.BlogPost).limit(pagesize).offset((page - 1) * pagesize).all()
         return [schemas.BlogPost.model_validate(post) for post in posts]
     except SQLAlchemyError:
-        return None
+        return []
