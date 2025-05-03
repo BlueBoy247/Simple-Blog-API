@@ -1,3 +1,6 @@
+"""
+This module runs the FastAPI application.
+"""
 import uvicorn
 
 if __name__ == "__main__":
