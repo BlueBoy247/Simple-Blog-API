@@ -1,7 +1,9 @@
 # Simple Blog API
 [繁體中文](./README.md) | English
 
-A simple blog backend API built with FastAPI.
+A simple blog backend API built with FastAPI. The original purpose of this project was to serve as a task submission for the Backend & SRE internship selection, as part of the *University of Taipei Administrative System Student Collaboration Program*.
+
+[Interview demo version](https://github.com/BlueBoy247/Simple-Blog-API/tree/demo)
 
 ## Architecture
 ```

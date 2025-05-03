@@ -1,7 +1,9 @@
 # Simple Blog API
 繁體中文 | [English](./README-en.md)
 
-基於 FastAPI 的簡易部落格後端 API。
+基於 FastAPI 的簡易部落格後端 API。原為臺北市立大學校務系統協作計畫團隊 Backend & SRE 徵選小作業。
+
+[面談 demo 版本](https://github.com/BlueBoy247/Simple-Blog-API/tree/demo)
 
 ## 架構
 ```
