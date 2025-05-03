@@ -55,8 +55,8 @@ async def create_post(blog_post: schemas.BlogPost, db: Session = Depends(get_db)
 
     Returns:
         dict: Result dictionary with a success status. If successful, {"message": "success"} 
-        is returned. If an error occurs, {"success": False, "error": str(e)} is returned 
-        with the error message.
+        is returned. If an error occurs, raises an HTTPException with status code 500 and
+        the error message.
     """
 
     result = crud.create_post(db, blog_post)
